@@ -1,5 +1,9 @@
 package game
 
+import (
+	"strconv"
+)
+
 type Game struct {
 	player Player
 	dealer Dealer
@@ -27,19 +31,29 @@ type Deck struct {
 }
 
 func NewDeck() Deck {
-	// groups := [4]string{"S", "D", "C", "H"}
-	// faces := [13]string{"2", "3", "4", "5", "6", "7", "8", "9", "10", "K", "Q", "A", "J"}
-	
-	// all_cards := [52]Card{}
-	return *new(Deck)
+	groups := [4]string{"S", "D", "C", "H"}
+	faces := [13]string{"2", "3", "4", "5", "6", "7", "8", "9", "10", "K", "Q", "A", "J"}
+	var cards [52]Card
+	for i := 0; i < len(groups); i++ {
+		for j := 0; j < len(faces); j++ {
+			index := i*len(faces) + j
+			if faces[j] != "K" || faces[j] != "Q" || faces[j] != "A" || faces[j] != "J" {
+				num, _ := strconv.ParseInt(faces[j], 10, 32)
+				cards[index] = Card{groups[i], faces[j], int(num)}
+			} else {
+				cards[index] = Card{groups[i], faces[j], 10}
+			}
+		}
+	}
+	return Deck{cards}
 
 }
 
 func NewGame() Game {
-	cards := Cards{Card{"S","2",2}, Card{"S","2",2}}
+	cards := Cards{Card{"S", "2", 2}, Card{"S", "2", 2}}
 	player := Player{cards}
 	dealer := Dealer{cards}
-	game := Game{player, dealer, *new(Deck)}
+	game := Game{player, dealer, NewDeck()}
 	return game
 }
 
